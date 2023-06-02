@@ -46,18 +46,64 @@ irAEscuela = alterarFelicidad (-20)
 tomarMedicamento :: Actividad
 tomarMedicamento = alterarFelicidad (-20) . alterarDinero (-50)
 
+homero :: Personaje
 homero = UnPersonaje "homero" 100 100
 
+skinner :: Personaje
 skinner = UnPersonaje "skinner" 50 15
 
+lisa :: Personaje
 lisa = UnPersonaje "lisa" 80 50
 
 -- * Main> comerDonas 12 homero
+
 -- UnPersonaje {nombre = "homero", dinero = 90, felicidad = 220}
 
 -- * Main> trabajarDirector skinner
+
 --  UnPersonaje {nombre = "skinner", dinero = 67, felicidad = 0}
 
--- *Main> tomarMedicamento (irEscuela lisa)
+-- * Main> tomarMedicamento (irEscuela lisa)
+
 -- UnPersonaje {nombre = "lisa", dinero = 30, felicidad = 50}
 
+-- Punto 2
+
+type Logro = Personaje -> Bool
+
+srBurns :: Personaje
+srBurns = UnPersonaje "Sr. Burns" 10000 5
+
+serMillonario :: Logro
+serMillonario pers = dinero pers > dinero srBurns
+
+alegrarse :: Int -> Logro
+alegrarse num pers = felicidad pers > num
+
+verKrosti :: Logro
+verKrosti pers = dinero pers > 10
+
+--Inventado
+ganarLoteria :: Logro
+ganarLoteria pers = serMillonario pers && verKrosti pers
+
+--A
+
+bart1 :: Personaje
+bart1 = UnPersonaje "bart" 6 20
+
+bart2 :: Personaje
+bart2 = UnPersonaje "bart" 11 20
+
+mafia :: Actividad
+mafia = irTrabajo "mafia"
+
+esDecisiva :: Personaje -> Actividad -> Logro -> Bool
+esDecisiva pers actividad logro = (logro pers == False) && (logro (actividad pers) == True)
+
+-- *Main> esDecisiva bart1 mafia verKrosti
+-- True
+-- *Main> esDecisiva bart2 mafia verKrosti
+-- False
+
+--B
