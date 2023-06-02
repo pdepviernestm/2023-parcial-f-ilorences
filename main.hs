@@ -30,17 +30,13 @@ irTrabajo trabajo = alterarDinero (cuantoDinero trabajo)
 
 --irTrabajo' :: String -> Actividad
 --irTrabajo' trabajo
-
--- | trabajo == "escuela elemental" = alterarFelicidad (-20= . alterarDinero (cuantoDinero trabajo)
+-- | trabajo == "escuela elemental" = alterarFelicidad (-20). alterarDinero (cuantoDinero trabajo)
 -- | otherwise = alterarDinero (cuantoDinero trabajo)
-trabajarDirector :: Actividad
-trabajarDirector = alterarFelicidad (-20) . alterarDinero (cuantoDinero "escuela elemental")
 
+trabajarDirector :: Actividad
+trabajarDirector = irEscuela . irTrabajo "escuela elemental"
 cuantoDinero :: [a] -> Int
 cuantoDinero = length
-
-irAEscuela :: Actividad
-irAEscuela = alterarFelicidad (-20)
 
 --Inventado
 tomarMedicamento :: Actividad
@@ -92,17 +88,21 @@ bart1 = UnPersonaje "bart" 6 2
 bart2 :: Personaje
 bart2 = UnPersonaje "bart" 11 20
 
+bart3 :: Personaje
+bart3 = UnPersonaje "bart" 5 10
+
 mafia :: Actividad
 mafia = irTrabajo "mafia"
 
 esDecisiva :: Personaje -> Logro -> Actividad -> Bool
 esDecisiva pers logro actividad = (logro pers == False) && (logro (actividad pers) == True)
 
--- *Main> esDecisiva bart1 mafia verKrosti
+-- *Main> esDecisiva bart1 verKrosti mafia
 -- True
--- *Main> esDecisiva bart2 mafia verKrosti
+-- *Main> esDecisiva bart2 verKrosti mafia
 -- False
-
+-- esDecisiva bart3 verKrosti mafia
+-- False
 --B
 
 -- Prueba
@@ -110,13 +110,16 @@ maggie :: Personaje
 maggie = UnPersonaje "maggie" 100 100
 
 actividades1 :: [Actividad]
-actividades1 = [irAEscuela,trabajo1, tomarMedicamento,trabajo2, mafia]
+actividades1 = [irEscuela,trabajo1, tomarMedicamento,trabajo2, mafia]
 
 actividades2 :: [Actividad]
-actividades2 = [irAEscuela,tomarMedicamento,trabajo2,trabajo1, mafia]
+actividades2 = [irEscuela,tomarMedicamento,trabajo2,trabajo1, mafia]
 
 actividades3 :: [Actividad]
-actividades3 = [irAEscuela, tomarMedicamento, mafia]
+actividades3 = [irEscuela, tomarMedicamento, mafia]
+
+actividades4 :: [Actividad]
+actividades4 = [irEscuela, tomarMedicamento, mafia, comerDonas 200]
 
 trabajo1 :: Actividad
 trabajo1 = irTrabajo "masdeveintecaracteres01"
@@ -148,6 +151,11 @@ primeraDecisiva pers logro = filter (esDecisiva pers logro)
 -- *Main> realizarPrimeraDecisiva maggie serMillonario actividades3
 -- UnPersonaje {nombre = "maggie", dinero = 100, felicidad = 100} (no cambia porque ninguna es decisiva)
 
+-- *Main> realizarPrimeraDecisiva maggie (alegrarse 105) actividades4
+-- UnPersonaje {nombre = "maggie", dinero = 90, felicidad = 2100}
+
+-- *Main> realizarPrimeraDecisiva maggie (alegrarse 90) actividades4
+-- UnPersonaje {nombre = "maggie", dinero = 100, felicidad = 100} (no cambia porque el valor a superar es 95 y su felicidad ya lo superaba, no tiene decisivas)
 
 -- C
 actividadInfinita1 :: [Actividad]
@@ -157,14 +165,14 @@ actividadInfinita2 :: [Actividad]
 actividadInfinita2 = repeat (irTrabajo "bbbbbbbbbbb")
 
 actividadInfinita3 :: [Actividad]
-actividadInfinita3 = repeat (irAEscuela)
+actividadInfinita3 = repeat (irEscuela)
 
 -- *Main> irTrabajo "aaaaaaaaaaaaaaaaaaaaa" maggie
 -- UnPersonaje {nombre = "maggie", dinero = 121, felicidad = 100}
 
 -- *Main> realizarPrimeraDecisiva maggie serMillonario actividadInfinita1
 -- UnPersonaje {nombre = "maggie", dinero = 121, felicidad = 100} :: Al encontrar la primera actividad decisiva,
--- no evalua toda la lista infinita (lazy) por lo que no queda recorriendo infinitamente la funcion
+-- no evalua toda la lista infinita (lazy) por lo que no queda recorriendola
 ------------------------------------------------------------------------------------------------------------------
 -- *Main> irTrabajo "bbbbbbbbbbb" maggie
 -- UnPersonaje {nombre = "maggie", dinero = 111, felicidad = 100}
@@ -172,4 +180,4 @@ actividadInfinita3 = repeat (irAEscuela)
 -- *Main> realizarPrimeraDecisiva maggie serMillonario actividadInfinita2 :: El programa se cuelga ya que recorre todas
 -- las actividades hasta encontrar la primera que permita "serMillonario" pero no existe ninguna
 
--- Con actividadInfinita3 pasa lo mismo, pero nunca lo encontraría porque irAEscuela no es decisiva para el logro serMillonario
+-- Con actividadInfinita3 pasa lo mismo, pero nunca lo encontraría porque irEscuela no es decisiva para el logro serMillonario
