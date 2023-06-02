@@ -149,3 +149,27 @@ primeraDecisiva pers logro = filter (esDecisiva pers logro)
 -- UnPersonaje {nombre = "maggie", dinero = 100, felicidad = 100} (no cambia porque ninguna es decisiva)
 
 
+-- C
+actividadInfinita1 :: [Actividad]
+actividadInfinita1 = repeat (irTrabajo "aaaaaaaaaaaaaaaaaaaaa")
+
+actividadInfinita2 :: [Actividad]
+actividadInfinita2 = repeat (irTrabajo "bbbbbbbbbbb")
+
+actividadInfinita3 :: [Actividad]
+actividadInfinita3 = repeat (irAEscuela)
+
+-- *Main> irTrabajo "aaaaaaaaaaaaaaaaaaaaa" maggie
+-- UnPersonaje {nombre = "maggie", dinero = 121, felicidad = 100}
+
+-- *Main> realizarPrimeraDecisiva maggie serMillonario actividadInfinita1
+-- UnPersonaje {nombre = "maggie", dinero = 121, felicidad = 100} :: Al encontrar la primera actividad decisiva,
+-- no evalua toda la lista infinita (lazy) por lo que no queda recorriendo infinitamente la funcion
+------------------------------------------------------------------------------------------------------------------
+-- *Main> irTrabajo "bbbbbbbbbbb" maggie
+-- UnPersonaje {nombre = "maggie", dinero = 111, felicidad = 100}
+
+-- *Main> realizarPrimeraDecisiva maggie serMillonario actividadInfinita2 :: El programa se cuelga ya que recorre todas
+-- las actividades hasta encontrar la primera que permita "serMillonario" pero no existe ninguna
+
+-- Con actividadInfinita3 pasa lo mismo, pero nunca lo encontraría porque irAEscuela no es decisiva para el logro serMillonario
