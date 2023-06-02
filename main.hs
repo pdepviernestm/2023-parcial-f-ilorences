@@ -56,15 +56,12 @@ lisa :: Personaje
 lisa = UnPersonaje "lisa" 80 50
 
 -- * Main> comerDonas 12 homero
-
 -- UnPersonaje {nombre = "homero", dinero = 90, felicidad = 220}
 
 -- * Main> trabajarDirector skinner
-
 --  UnPersonaje {nombre = "skinner", dinero = 67, felicidad = 0}
 
 -- * Main> tomarMedicamento (irEscuela lisa)
-
 -- UnPersonaje {nombre = "lisa", dinero = 30, felicidad = 50}
 
 -- Punto 2
@@ -72,7 +69,7 @@ lisa = UnPersonaje "lisa" 80 50
 type Logro = Personaje -> Bool
 
 srBurns :: Personaje
-srBurns = UnPersonaje "Sr. Burns" 10000 5
+srBurns = UnPersonaje "Sr. Burns" 120 5
 
 serMillonario :: Logro
 serMillonario pers = dinero pers > dinero srBurns
@@ -90,7 +87,7 @@ ganarLoteria pers = serMillonario pers && verKrosti pers
 --A
 
 bart1 :: Personaje
-bart1 = UnPersonaje "bart" 6 20
+bart1 = UnPersonaje "bart" 6 2
 
 bart2 :: Personaje
 bart2 = UnPersonaje "bart" 11 20
@@ -98,8 +95,8 @@ bart2 = UnPersonaje "bart" 11 20
 mafia :: Actividad
 mafia = irTrabajo "mafia"
 
-esDecisiva :: Personaje -> Actividad -> Logro -> Bool
-esDecisiva pers actividad logro = (logro pers == False) && (logro (actividad pers) == True)
+esDecisiva :: Personaje -> Logro -> Actividad -> Bool
+esDecisiva pers logro actividad = (logro pers == False) && (logro (actividad pers) == True)
 
 -- *Main> esDecisiva bart1 mafia verKrosti
 -- True
@@ -107,3 +104,48 @@ esDecisiva pers actividad logro = (logro pers == False) && (logro (actividad per
 -- False
 
 --B
+
+-- Prueba
+maggie :: Personaje
+maggie = UnPersonaje "maggie" 100 100
+
+actividades1 :: [Actividad]
+actividades1 = [irAEscuela,trabajo1, tomarMedicamento,trabajo2, mafia]
+
+actividades2 :: [Actividad]
+actividades2 = [irAEscuela,tomarMedicamento,trabajo2,trabajo1, mafia]
+
+actividades3 :: [Actividad]
+actividades3 = [irAEscuela, tomarMedicamento, mafia]
+
+trabajo1 :: Actividad
+trabajo1 = irTrabajo "masdeveintecaracteres01"
+
+-- *Main> trabajo1 maggie
+-- UnPersonaje {nombre = "maggie", dinero = 123, felicidad = 100}
+
+trabajo2 :: Actividad
+trabajo2 = irTrabajo "masdeveintecaracteres002"
+
+-- trabajo2 maggie
+-- UnPersonaje {nombre = "maggie", dinero = 124, felicidad = 100}
+
+--
+realizarPrimeraDecisiva :: Personaje -> Logro -> [Actividad] -> Personaje
+realizarPrimeraDecisiva pers logro acts
+  | null (primeraDecisiva pers logro acts) = pers
+  | otherwise = head(primeraDecisiva pers logro acts) pers
+
+primeraDecisiva :: Personaje -> Logro -> [Actividad] -> [Actividad]
+primeraDecisiva pers logro = filter (esDecisiva pers logro)
+
+-- *Main> realizarPrimeraDecisiva maggie serMillonario actividades1
+-- UnPersonaje {nombre = "maggie", dinero = 123, felicidad = 100}
+
+-- *Main> realizarPrimeraDecisiva maggie serMillonario actividades2
+-- UnPersonaje {nombre = "maggie", dinero = 124, felicidad = 100}
+
+-- *Main> realizarPrimeraDecisiva maggie serMillonario actividades3
+-- UnPersonaje {nombre = "maggie", dinero = 100, felicidad = 100} (no cambia porque ninguna es decisiva)
+
+
